@@ -1,0 +1,6 @@
+name = "lean_category"
+version = "0.1.0"
+defaultTargets = ["LeanCategory"]
+
+[[lean_lib]]
+name = "LeanCategory"
