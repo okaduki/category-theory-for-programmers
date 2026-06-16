@@ -111,4 +111,28 @@ def yonedaEquiv (A : C) (F : C ⥤ Type v) : (yonedaObj A ⟹ F) ≃ F.obj A whe
   left_inv := yonedaEquivLeftInv A F
   right_inv := yonedaEquivRightInv A F
 
+/-! ## 演習: 米田埋め込み -/
+
+/-- 米田埋め込みの射の対応: `f : B ⟶ A` を自然変換 `yonedaObj A ⟹ yonedaObj B` に送る。
+各成分は `f` による前合成 `g ↦ f ≫ g`。
+
+`yonedaEquivInvFun A (yonedaObj B)` と本質的に同じだが、
+こちらは `yonedaObj B` を直接使って自然変換を構成する。 -/
+def yonedaMap {A B : C} (f : B ⟶ A) : yonedaObj A ⟹ yonedaObj B where
+  app X g := f ≫ g
+  -- ヒント: `funext` で `g : A ⟶ X` を導入し、
+  -- ゴールが `f ≫ g ≫ h = (f ≫ g) ≫ h` の形になることを確認せよ。
+  -- `show` で目標を具体化してから `Category.assoc` を使う。
+  naturality := by
+    sorry
+
+/-- 米田の補題を `F = yonedaObj B` に特殊化したもの: 自然変換 `yonedaObj A ⟹ yonedaObj B` と
+射 `B ⟶ A` の間に全単射がある。これが**米田埋め込みの完全忠実性**を意味する。
+
+ヒント: `(yonedaObj B).obj A` を展開すると `B ⟶ A` になる。
+`yonedaEquiv` を適切な引数で適用するだけで示せる。 -/
+def yonedaFullyFaithful (A B : C) :
+    (yonedaObj A ⟹ yonedaObj B) ≃ (B ⟶ A) :=
+  sorry
+
 end CategoryTheory

@@ -60,6 +60,8 @@ lake env lean LeanCategory/Category/Basic.lean
 | `Yoneda.lean` | `yonedaEquivInvFun` の `app` / `naturality` | 米田写像の逆 (← 方向) の定義と自然性の証明 |
 | `Yoneda.lean` | `yonedaEquivRightInv` | `toFun ∘ invFun = id` の証明 (`F.map_id` を使う) |
 | `Yoneda.lean` | `yonedaEquivLeftInv` | `invFun ∘ toFun = id` の証明 (自然性 `α.naturality` を使う) — **米田の補題の核心** |
+| `Yoneda.lean` | `yonedaMap` の `naturality` | 米田埋め込みの射の対応が自然変換であること (`Category.assoc`) |
+| `Yoneda.lean` | `yonedaFullyFaithful` | 米田埋め込みの完全忠実性 (`yonedaEquiv` の特殊化) |
 
 最後の `yonedaEquiv` (`yonedaObj A ⟹ F ≃ F.obj A`) 自体は、これらの部品を
 組み立てるだけなので `sorry` なしで完成している。すべての `sorry` が埋まれば、
