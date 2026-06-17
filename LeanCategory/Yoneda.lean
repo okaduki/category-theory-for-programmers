@@ -135,4 +135,69 @@ def yonedaFullyFaithful (A B : C) :
     (yonedaObj A ⟹ yonedaObj B) ≃ (B ⟶ A) :=
   sorry
 
+/-! ## 応用例: 米田の補題を具体的な関手に適用する
+
+米田の補題 `(yonedaObj A ⟹ F) ≃ F.obj A` の `F`・`A` を具体的に選ぶと、
+プログラミングでおなじみの型同型が得られる。Haskell 風に書くと米田の補題は
+
+```haskell
+forall x. (a -> x) -> F x  ≅  F a
+```
+
+であり、`yonedaObj A` の `X` での値 `A ⟶ X` が `a -> x` に、自然変換が
+`forall x.` で全称量化された多相関数に対応する。 -/
+
+/-- 応用例1 (継続渡し形式, CPS): 恒等関手 `Id : Type v ⥤ Type v` に米田の補題を適用すると、
+
+```
+(yonedaObj A ⟹ Id) ≃ A      -- forall x. (A → x) → x  ≅  A
+```
+
+が得られる。左辺は「継続 `A ⟶ x` を任意の `x` について受け取り `x` を返す多相関数」、
+すなわち `A` の値の CPS 表現であり、それが元の値 `A` と1対1に対応する。
+
+ヒント: `yonedaEquiv` を恒等関手 `Functor.id (Type v)` に適用するだけ。
+`(Functor.id (Type v)).obj A = A` は定義的に等しい。 -/
+def cpsEquiv (A : Type v) : (yonedaObj A ⟹ Functor.id (Type v)) ≃ A :=
+  sorry
+
+/-- リスト関手 `List : Type v ⥤ Type v`。対象 `X` を `List X` に、射 `f` を `List.map f` に送る。 -/
+def listFunctor : Type v ⥤ Type v where
+  obj X := List X
+  map f := List.map f
+  -- ヒント: `funext` でリスト `l` を取り、`l` についての帰納法 (`induction l with`)。
+  -- cons の場合は帰納法の仮定 `ih` に cons の頭をかぶせる (`congrArg (a :: ·) ih`)。
+  map_id := by
+    sorry
+  map_comp := by
+    sorry
+
+/-- 応用例2 (ユニット型のリスト): リスト関手とユニット型 `PUnit` に米田の補題を適用すると、
+
+```
+(yonedaObj PUnit ⟹ listFunctor) ≃ List PUnit
+```
+
+が得られる。左辺は「`x` を1つ受け取り `List x` を返す自然な多相関数」全体で、自然性から
+`fun x => [x, ..., x]`(長さ `n` のリスト)の形に限られる。右辺 `List PUnit` も要素がすべて
+`PUnit.unit` なので長さだけで決まり、本質的に自然数である(下の `listPUnitEquivNat`)。
+
+ヒント: `yonedaEquiv` を `listFunctor` と `PUnit` に適用するだけ。 -/
+def listUnitEquiv : (yonedaObj (PUnit : Type v) ⟹ listFunctor) ≃ List (PUnit : Type v) :=
+  sorry
+
+/-- `List PUnit` はその長さによって自然数と1対1に対応する。
+`listUnitEquiv` と合わせると `(yonedaObj PUnit ⟹ listFunctor) ≃ List PUnit ≃ Nat`、
+すなわち「`x → [x]` という形の自然な多相関数の正体は自然数」だと分かる。
+
+ヒント: `toFun` はリストの長さ、`invFun` は `List.replicate n PUnit.unit`。
+`left_inv` / `right_inv` はいずれも帰納法。`PUnit` の要素はすべて `PUnit.unit` に等しい。 -/
+def listPUnitEquivNat : List (PUnit : Type v) ≃ Nat where
+  toFun l := l.length
+  invFun n := List.replicate n PUnit.unit
+  left_inv := by
+    sorry
+  right_inv := by
+    sorry
+
 end CategoryTheory
