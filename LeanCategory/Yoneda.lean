@@ -42,7 +42,7 @@ import LeanCategory.NatTrans.Basic
 
 namespace CategoryTheory
 
-universe u v
+universe u v w
 
 /-- 2つの型 `α`, `β` の間の全単射。 -/
 structure Equiv (α : Sort u) (β : Sort v) where
@@ -57,6 +57,17 @@ structure Equiv (α : Sort u) (β : Sort v) where
 
 /-- `α ≃ β` : `α` と `β` の間の全単射の型。 -/
 infixr:25 " ≃ " => Equiv
+
+/-- 全単射の合成 (推移律)。`α ≃ β` と `β ≃ γ` から `α ≃ γ` を作る。
+`toFun` / `invFun` は与えてあるので、`left_inv` / `right_inv` を埋めよ。 -/
+def Equiv.trans {α : Sort u} {β : Sort v} {γ : Sort w} (e₁ : α ≃ β) (e₂ : β ≃ γ) : α ≃ γ where
+  toFun a := e₂.toFun (e₁.toFun a)
+  invFun c := e₁.invFun (e₂.invFun c)
+  -- ヒント: 内側の逆写像から順に `e₂.left_inv` / `e₁.left_inv` で潰す。
+  left_inv := by
+    sorry
+  right_inv := by
+    sorry
 
 variable {C : Type u} [Category.{u, v} C]
 
@@ -199,5 +210,19 @@ def listPUnitEquivNat : List (PUnit : Type v) ≃ Nat where
     sorry
   right_inv := by
     sorry
+
+/-- 米田の補題と長さ同型を合成した最終形:
+
+```
+(yonedaObj PUnit ⟹ listFunctor) ≃ Nat
+```
+
+「`a → [a]` という形の自然な多相関数(米田の左辺 `forall a. (() → a) → [a]` を
+`() → a ≅ a` で簡約したもの)は、自然数とちょうど1対1に対応する」という主張の完全形。
+
+ヒント: `listUnitEquiv`(米田の補題)と `listPUnitEquivNat`(`List PUnit ≃ Nat`)を
+`Equiv.trans` で繋ぐだけ。 -/
+def listUnitNatEquiv : (yonedaObj (PUnit : Type v) ⟹ listFunctor) ≃ Nat :=
+  sorry
 
 end CategoryTheory
