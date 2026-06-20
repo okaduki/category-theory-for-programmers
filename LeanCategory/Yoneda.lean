@@ -146,6 +146,36 @@ def yonedaFullyFaithful (A B : C) :
     (yonedaObj A ⟹ yonedaObj B) ≃ (B ⟶ A) :=
   sorry
 
+/-! ## 米田の補題の自然性
+
+`yonedaEquiv A F` の全単射は `A`・`F` について **自然** である。ここでは `→` 方向
+`yonedaEquivToFun` について、その自然性の可換図式を等式として示す。 -/
+
+/-- **`F` についての自然性**: 自然変換 `θ : F ⟹ G` に対して、
+「`α` に `θ` を垂直合成してから評価する」のと「評価してから `θ.app A` で送る」のは一致する。
+
+ヒント: `yonedaEquivToFun` と `NatTrans.vcomp` の定義を展開すると両辺は定義的に等しく、
+`rfl` で示せる。 -/
+theorem yonedaEquivToFun_naturalF {F G : C ⥤ Type v} (A : C)
+    (θ : F ⟹ G) (α : yonedaObj A ⟹ F) :
+    yonedaEquivToFun A G (NatTrans.vcomp α θ)
+      = θ.app A (yonedaEquivToFun A F α) :=
+  sorry
+
+/-- **`A` についての自然性 (反変)**: 射 `g : A ⟶ B` に対して、
+「`yonedaMap g` を前から垂直合成してから評価する」のと「評価してから `F.map g` で送る」のは一致する。
+`g : A ⟶ B` が `yonedaObj B ⟹ yonedaObj A` を誘導する点に反変性が表れている。
+
+ヒント: `α.naturality g` を `𝟙 A` で評価すると
+`α.app B (𝟙 A ≫ g) = F.map g (α.app A (𝟙 A))` が得られる。
+ゴールの `g ≫ 𝟙 B` と `𝟙 A ≫ g` を単位律 (`Category.comp_id` / `Category.id_comp`) で
+`g` に揃えればよい。 -/
+theorem yonedaEquivToFun_naturalA {A B : C} (g : A ⟶ B)
+    (F : C ⥤ Type v) (α : yonedaObj A ⟹ F) :
+    yonedaEquivToFun B F (NatTrans.vcomp (yonedaMap g) α)
+      = F.map g (yonedaEquivToFun A F α) := by
+  sorry
+
 /-! ## 応用例: 米田の補題を具体的な関手に適用する
 
 米田の補題 `(yonedaObj A ⟹ F) ≃ F.obj A` の `F`・`A` を具体的に選ぶと、
