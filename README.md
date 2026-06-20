@@ -7,6 +7,15 @@ Lean 4 で圏論 (category theory) を学ぶための個人用プロジェクト
 Mathlib には `Mathlib.CategoryTheory` として非常に整備された圏論ライブラリがあるが、
 このプロジェクトは学習目的のため意図的にそれを使わず、必要なものをすべて自作する。
 
+## ブランチ構成
+
+* **`main`** — 演習用ブランチ。定義のデータ部分や自明な構成は与えてあり、法則やその応用の
+  証明が `sorry` になっている。これを穴埋めしながら学ぶ。
+* **`solutions`** — 解答ブランチ。`main` のすべての `sorry` を埋めたもの。
+  答え合わせや、行き詰まったときの参照用。
+
+基本的には `main` で手を動かし、必要に応じて `solutions` を見る、という使い方を想定している。
+
 ## 環境
 
 * Lean: `leanprover/lean4:v4.30.0` (`lean-toolchain` に固定)
@@ -62,6 +71,8 @@ lake env lean LeanCategory/Category/Basic.lean
 | `Yoneda.lean` | `yonedaEquivLeftInv` | `invFun ∘ toFun = id` の証明 (自然性 `α.naturality` を使う) — **米田の補題の核心** |
 | `Yoneda.lean` | `yonedaMap` の `naturality` | 米田埋め込みの射の対応が自然変換であること (`Category.assoc`) |
 | `Yoneda.lean` | `yonedaFullyFaithful` | 米田埋め込みの完全忠実性 (`yonedaEquiv` の特殊化) |
+| `Yoneda.lean` | `yonedaEquivToFun_naturalF` | 米田の全単射の `F` についての自然性 (`rfl`) |
+| `Yoneda.lean` | `yonedaEquivToFun_naturalA` | 米田の全単射の `A` についての自然性 (`α.naturality` を使う) |
 
 最後の `yonedaEquiv` (`yonedaObj A ⟹ F ≃ F.obj A`) 自体は、これらの部品を
 組み立てるだけなので `sorry` なしで完成している。すべての `sorry` が埋まれば、
