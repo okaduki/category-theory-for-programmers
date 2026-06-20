@@ -1,9 +1,9 @@
-# lean-category
+# category-theory-for-programmers
 
 Lean 4 で圏論 (category theory) を学ぶための個人用プロジェクト。
 
-**目標**: 「圏 (category) の定義」から始めて、「米田の補題 (Yoneda lemma)」の証明まで、
-基本的な概念を **Mathlib に依存せず、自分の手で一から定義・証明する**。
+目標: 「圏 (category) の定義」から始めて、「米田の補題 (Yoneda lemma)」の証明まで、
+基本的な概念を Mathlib に依存せず、自分の手で一から定義・証明する
 Mathlib には `Mathlib.CategoryTheory` として非常に整備された圏論ライブラリがあるが、
 このプロジェクトは学習目的のため意図的にそれを使わず、必要なものをすべて自作する。
 
@@ -114,5 +114,5 @@ grep -rn sorry LeanCategory/
 
 * Mathlib4: [`Mathlib.CategoryTheory.Category.Basic`](https://leanprover-community.github.io/mathlib4_docs/Mathlib/CategoryTheory/Category/Basic.html) など
   (定義の参考にするが、コードはコピーせず自分で書く)
-* 圏論の教科書 (例: Mac Lane "Categories for the Working Mathematician"、
-  またはより入門的な書籍) を併読しながら形式化する。
+* [プログラマーのための圏論](https://www.ohmsha.co.jp/book/9784274234866/)
+* [web版](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
