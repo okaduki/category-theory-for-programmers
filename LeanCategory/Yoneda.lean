@@ -141,20 +141,18 @@ def yonedaEquiv (A : C) (F : C ⥤ Type v) : (yonedaObj A ⟹ F) ≃ F.obj A whe
 こちらは `yonedaObj B` を直接使って自然変換を構成する。 -/
 def yonedaMap {A B : C} (f : B ⟶ A) : yonedaObj A ⟹ yonedaObj B where
   app X g := f ≫ g
-  -- ヒント: `funext` で `g : A ⟶ X` を導入し、
-  -- ゴールが `f ≫ g ≫ h = (f ≫ g) ≫ h` の形になることを確認せよ。
-  -- `show` で目標を具体化してから `Category.assoc` を使う。
   naturality := by
-    sorry
+    intro X Y h
+    funext (g : A ⟶ X)
+    show f ≫ (g ≫ h) = (f ≫ g) ≫ h
+    exact Eq.symm (Category.assoc f g h)
 
 /-- 米田の補題を `F = yonedaObj B` に特殊化したもの: 自然変換 `yonedaObj A ⟹ yonedaObj B` と
 射 `B ⟶ A` の間に全単射がある。これが**米田埋め込みの完全忠実性**を意味する。
-
-ヒント: `(yonedaObj B).obj A` を展開すると `B ⟶ A` になる。
-`yonedaEquiv` を適切な引数で適用するだけで示せる。 -/
+-/
 def yonedaFullyFaithful (A B : C) :
     (yonedaObj A ⟹ yonedaObj B) ≃ (B ⟶ A) :=
-  sorry
+  yonedaEquiv A (yonedaObj B)
 
 /-! ## 米田の補題の自然性
 
