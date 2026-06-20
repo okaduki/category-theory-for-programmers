@@ -58,16 +58,18 @@ structure Equiv (α : Sort u) (β : Sort v) where
 /-- `α ≃ β` : `α` と `β` の間の全単射の型。 -/
 infixr:25 " ≃ " => Equiv
 
-/-- 全単射の合成 (推移律)。`α ≃ β` と `β ≃ γ` から `α ≃ γ` を作る。
-`toFun` / `invFun` は与えてあるので、`left_inv` / `right_inv` を埋めよ。 -/
+/-- 全単射の合成 (推移律)。`α ≃ β` と `β ≃ γ` から `α ≃ γ` を作る。 -/
 def Equiv.trans {α : Sort u} {β : Sort v} {γ : Sort w} (e₁ : α ≃ β) (e₂ : β ≃ γ) : α ≃ γ where
   toFun a := e₂.toFun (e₁.toFun a)
   invFun c := e₁.invFun (e₂.invFun c)
-  -- ヒント: 内側の逆写像から順に `e₂.left_inv` / `e₁.left_inv` で潰す。
   left_inv := by
-    sorry
+    intro a
+    show e₁.invFun (e₂.invFun (e₂.toFun (e₁.toFun a))) = a
+    rw [e₂.left_inv, e₁.left_inv]
   right_inv := by
-    sorry
+    intro c
+    show e₂.toFun (e₁.toFun (e₁.invFun (e₂.invFun c))) = c
+    rw [e₁.right_inv, e₂.right_inv]
 
 variable {C : Type u} [Category.{u, v} C]
 
@@ -204,22 +206,31 @@ forall x. (a -> x) -> F x  ≅  F a
 
 が得られる。左辺は「継続 `A ⟶ x` を任意の `x` について受け取り `x` を返す多相関数」、
 すなわち `A` の値の CPS 表現であり、それが元の値 `A` と1対1に対応する。
-
-ヒント: `yonedaEquiv` を恒等関手 `Functor.id (Type v)` に適用するだけ。
-`(Functor.id (Type v)).obj A = A` は定義的に等しい。 -/
+-/
 def cpsEquiv (A : Type v) : (yonedaObj A ⟹ Functor.id (Type v)) ≃ A :=
-  sorry
+  yonedaEquiv A (Functor.id (Type v))
 
 /-- リスト関手 `List : Type v ⥤ Type v`。対象 `X` を `List X` に、射 `f` を `List.map f` に送る。 -/
 def listFunctor : Type v ⥤ Type v where
   obj X := List X
   map f := List.map f
-  -- ヒント: `funext` でリスト `l` を取り、`l` についての帰納法 (`induction l with`)。
-  -- cons の場合は帰納法の仮定 `ih` に cons の頭をかぶせる (`congrArg (a :: ·) ih`)。
   map_id := by
-    sorry
+    intro X
+    funext l
+    induction l with
+    | nil => rfl
+    | cons x xs ih =>
+      apply congrArg (x :: ·)
+      exact ih
   map_comp := by
-    sorry
+    intro X Y Z f g
+    funext l
+    induction l with
+    | nil => rfl
+    | cons x xs ih =>
+      show List.map (f ≫ g) (x :: xs) = (List.map g (List.map f (x :: xs)))
+      apply congrArg (g (f x) :: ·)
+      exact ih
 
 /-- 応用例2 (ユニット型のリスト): リスト関手とユニット型 `PUnit` に米田の補題を適用すると、
 
@@ -229,25 +240,30 @@ def listFunctor : Type v ⥤ Type v where
 
 が得られる。左辺は「`x` を1つ受け取り `List x` を返す自然な多相関数」全体で、自然性から
 `fun x => [x, ..., x]`(長さ `n` のリスト)の形に限られる。右辺 `List PUnit` も要素がすべて
-`PUnit.unit` なので長さだけで決まり、本質的に自然数である(下の `listPUnitEquivNat`)。
-
-ヒント: `yonedaEquiv` を `listFunctor` と `PUnit` に適用するだけ。 -/
+`PUnit.unit` なので長さだけで決まり、本質的に自然数である(下の `listPUnitEquivNat`)。 -/
 def listUnitEquiv : (yonedaObj (PUnit : Type v) ⟹ listFunctor) ≃ List (PUnit : Type v) :=
-  sorry
+  yonedaEquiv PUnit listFunctor
 
 /-- `List PUnit` はその長さによって自然数と1対1に対応する。
 `listUnitEquiv` と合わせると `(yonedaObj PUnit ⟹ listFunctor) ≃ List PUnit ≃ Nat`、
-すなわち「`x → [x]` という形の自然な多相関数の正体は自然数」だと分かる。
+すなわち「`x → [x]` という形の自然な多相関数の正体は自然数」だと分かる。-/
 
+/-
 ヒント: `toFun` はリストの長さ、`invFun` は `List.replicate n PUnit.unit`。
 `left_inv` / `right_inv` はいずれも帰納法。`PUnit` の要素はすべて `PUnit.unit` に等しい。 -/
 def listPUnitEquivNat : List (PUnit : Type v) ≃ Nat where
   toFun l := l.length
   invFun n := List.replicate n PUnit.unit
   left_inv := by
-    sorry
+    intro l
+    induction l with
+    | nil => rfl
+    | cons x xs ih =>
+      show PUnit.unit :: List.replicate xs.length PUnit.unit = x :: xs
+      rw [ih]
   right_inv := by
-    sorry
+    intro n
+    exact List.length_replicate
 
 /-- 米田の補題と長さ同型を合成した最終形:
 
@@ -256,11 +272,8 @@ def listPUnitEquivNat : List (PUnit : Type v) ≃ Nat where
 ```
 
 「`a → [a]` という形の自然な多相関数(米田の左辺 `forall a. (() → a) → [a]` を
-`() → a ≅ a` で簡約したもの)は、自然数とちょうど1対1に対応する」という主張の完全形。
-
-ヒント: `listUnitEquiv`(米田の補題)と `listPUnitEquivNat`(`List PUnit ≃ Nat`)を
-`Equiv.trans` で繋ぐだけ。 -/
+`() → a ≅ a` で簡約したもの)は、自然数とちょうど1対1に対応する」という主張の完全形。-/
 def listUnitNatEquiv : (yonedaObj (PUnit : Type v) ⟹ listFunctor) ≃ Nat :=
-  sorry
+  listUnitEquiv.trans listPUnitEquivNat
 
 end CategoryTheory
