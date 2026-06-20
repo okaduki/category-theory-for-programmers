@@ -163,29 +163,27 @@ def yonedaFullyFaithful (A B : C) :
 
 /-- **`F` についての自然性**: 自然変換 `θ : F ⟹ G` に対して、
 「`α` に `θ` を垂直合成してから評価する」のと「評価してから `θ.app A` で送る」のは一致する。
-
-ヒント: `yonedaEquivToFun` と `NatTrans.vcomp` の定義を展開すると両辺は定義的に等しく、
-`rfl` で示せる。 -/
+`yonedaEquivToFun` と `NatTrans.vcomp` の定義からただちに従う。 -/
 theorem yonedaEquivToFun_naturalF {F G : C ⥤ Type v} (A : C)
     (θ : F ⟹ G) (α : yonedaObj A ⟹ F) :
     yonedaEquivToFun A G (NatTrans.vcomp α θ)
       = θ.app A (yonedaEquivToFun A F α) :=
-  sorry
+  rfl
 
 /-- **`A` についての自然性 (反変)**: 射 `g : A ⟶ B` に対して、
 「`yonedaMap g` を前から垂直合成してから評価する」のと「評価してから `F.map g` で送る」のは一致する。
 `g : A ⟶ B` が `yonedaObj B ⟹ yonedaObj A` を誘導する点に反変性が表れている。
-
-ヒント: `α.naturality g` を `𝟙 A` で評価すると
-`α.app B (𝟙 A ≫ g) = F.map g (α.app A (𝟙 A))` が得られる。
-ゴールの `g ≫ 𝟙 B` と `𝟙 A ≫ g` を単位律 (`Category.comp_id` / `Category.id_comp`) で
-`g` に揃えればよい。 -/
+`α` の自然性 (`α.naturality g` を `𝟙 A` で評価したもの) から従う。 -/
 theorem yonedaEquivToFun_naturalA {A B : C} (g : A ⟶ B)
     (F : C ⥤ Type v) (α : yonedaObj A ⟹ F) :
     yonedaEquivToFun B F (NatTrans.vcomp (yonedaMap g) α)
       = F.map g (yonedaEquivToFun A F α) := by
-  sorry
-
+  have nat := congrFun (α.naturality g) (𝟙 A)
+  show α.app B (g ≫ 𝟙 B) = F.map g (α.app A (𝟙 A))
+  calc α.app B (g ≫ 𝟙 B)
+      = α.app B g := by rw [Category.comp_id]
+    _ = α.app B (𝟙 A ≫ g) := by rw [Category.id_comp]
+    _ = F.map g (α.app A (𝟙 A)) := nat
 /-! ## 応用例: 米田の補題を具体的な関手に適用する
 
 米田の補題 `(yonedaObj A ⟹ F) ≃ F.obj A` の `F`・`A` を具体的に選ぶと、
