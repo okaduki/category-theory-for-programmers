@@ -53,23 +53,23 @@ def Functor.id (C : Type u₁) [Category C] : C ⥤ C where
   obj X := X
   map f := f
   map_id := by
-    sorry
+    intro X
+    rfl
   map_comp := by
-    sorry
+    intro X Y Z f g
+    rfl
 
 /-- 関手の合成 `F ⋙ G : C ⥤ E`。`F : C ⥤ D`, `G : D ⥤ E` をまず `F`, 次に `G`
 の順に適用する。 -/
 def Functor.comp (F : C ⥤ D) (G : D ⥤ E) : C ⥤ E where
   obj X := G.obj (F.obj X)
   map f := G.map (F.map f)
-  -- ヒント: `F.map_id` で `F.map (𝟙 X)` を `𝟙 (F.obj X)` に書き換えてから、
-  -- `G.map_id` を使う。
   map_id := by
-    sorry
-  -- ヒント: `F.map_comp` で `F.map (f ≫ g)` を `F.map f ≫ F.map g` に書き換えてから、
-  -- `G.map_comp` を使う。
+    intro X
+    rw [F.map_id, G.map_id]
   map_comp := by
-    sorry
+    intro X Y Z f g
+    rw [F.map_comp, G.map_comp]
 
 /-- `F ⋙ G` : 関手の合成 (`F` の後に `G`)。 -/
 scoped infixr:80 " ⋙ " => Functor.comp

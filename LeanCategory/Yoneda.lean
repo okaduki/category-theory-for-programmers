@@ -74,37 +74,41 @@ variable {C : Type u} [Category.{u, v} C]
 /-- 共変 Hom 関手 `Hom(A,-) : C ⥤ Type v`。 -/
 def yonedaObj (A : C) : C ⥤ Type v where
   obj X := A ⟶ X
-  map g f := f ≫ g
-  -- ヒント: `(yonedaObj A).map (𝟙 X) = fun f => f ≫ 𝟙 X` であり、
-  -- これは `fun f => f` (`Category.comp_id`) と等しい。`funext` を使う。
+  map g := fun f => f ≫ g
   map_id := by
-    sorry
-  -- ヒント: `(yonedaObj A).map (f ≫ g) = fun h => h ≫ (f ≫ g)` であり、
-  -- `Category.assoc` を使って `fun h => (h ≫ f) ≫ g` と等しいことを示す
-  -- (`.symm` が必要かどうか考えよ)。`funext` を使う。
+    intro X
+    funext f
+    exact Category.comp_id f
   map_comp := by
-    sorry
+    intro X Y Z f g
+    funext h
+    show h ≫ f ≫ g = (h ≫ f) ≫ g
+    rw [Category.assoc]
 
 variable {F : C ⥤ Type v}
 
 /-- 米田写像 (→ 方向): 自然変換 `α : yonedaObj A ⟹ F` を、
 `α` の `𝟙 A` での値 `α.app A (𝟙 A) : F.obj A` に送る。 -/
 def yonedaEquivToFun (A : C) (F : C ⥤ Type v) (α : yonedaObj A ⟹ F) : F.obj A :=
-  sorry
+  α.app A (𝟙 A)
 
 /-- 米田写像の逆 (← 方向): 元 `x : F.obj A` から自然変換を作る。
 `f : A ⟶ X` を `F.map f x` に送る。 -/
-def yonedaEquivInvFun (A : C) (F : C ⥤ Type v) (x : F.obj A) : yonedaObj A ⟹ F where
-  app X f := sorry
-  -- ヒント: `F.map_comp` を使う。`(yonedaObj A).map g f = f ≫ g` であることに注意する。
+def yonedaEquivInvFun (A : C) (F : C ⥤ Type v) (Fa : F.obj A) : yonedaObj A ⟹ F where
+  app (X : C) (f : A ⟶ X) := F.map f Fa
   naturality := by
-    sorry
+    intro X Y f
+    funext h
+    show F.map (h ≫ f) Fa = F.map f (F.map h Fa)
+    rw [F.map_comp]
+    rfl
 
 /-- `yonedaEquivInvFun` してから `yonedaEquivToFun` すると元に戻る。
 (`F.map_id` を使う。) -/
 theorem yonedaEquivRightInv (A : C) (F : C ⥤ Type v) (x : F.obj A) :
     yonedaEquivToFun A F (yonedaEquivInvFun A F x) = x := by
-  sorry
+  show F.map (𝟙 A) x = x
+  exact congrFun (F.map_id A) x
 
 /-- `yonedaEquivToFun` してから `yonedaEquivInvFun` すると元に戻る。
 (`α.naturality` を使う — `α : yonedaObj A ⟹ F` の自然性から、
@@ -112,7 +116,13 @@ theorem yonedaEquivRightInv (A : C) (F : C ⥤ Type v) (x : F.obj A) :
 `NatTrans.ext` で `app` の等式に帰着させる。) -/
 theorem yonedaEquivLeftInv (A : C) (F : C ⥤ Type v) (α : yonedaObj A ⟹ F) :
     yonedaEquivInvFun A F (yonedaEquivToFun A F α) = α := by
-  sorry
+  apply NatTrans.ext
+  funext X f
+  show F.map f (α.app A (𝟙 A)) = α.app X f
+  have nat := congrFun (α.naturality f) (𝟙 A)
+  calc F.map f (α.app A (𝟙 A))
+      = α.app X (𝟙 A ≫ f) := nat.symm
+    _ = α.app X f := by rw [Category.id_comp]
 
 /-- **米田の補題**: 関手 `F : C ⥤ Type v` と対象 `A : C` に対して、
 `yonedaObj A = Hom(A,-)` から `F` への自然変換は、`F.obj A` の元と1対1に対応する。 -/

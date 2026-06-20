@@ -42,7 +42,7 @@ lake env lean LeanCategory/Category/Basic.lean
 | --- | --- | --- | --- |
 | 1 | [`Category/Basic.lean`](LeanCategory/Category/Basic.lean) | 圏 (`Category`) の定義、`≫`・`𝟙` 記法、単位律・結合律 | ✅ 完了 |
 | 1' | [`Category/Types.lean`](LeanCategory/Category/Types.lean) | 例: 型と関数の圏 `Type u` への `Category` インスタンス | ✅ 完了 |
-| 1'' | [`Category/Opposite.lean`](LeanCategory/Category/Opposite.lean) | 双対圏 `Cᵒᵖ` の定義 (番外編、米田の補題の本筋とは独立) | 🚧 演習中 (`sorry` を埋める) |
+| 1'' | [`Category/Opposite.lean`](LeanCategory/Category/Opposite.lean) | 双対圏 `Cᵒᵖ` の定義 (番外編、米田の補題の本筋とは独立) | ✅ 完了 |
 | 2 | [`Functor/Basic.lean`](LeanCategory/Functor/Basic.lean) | 関手 `Functor C D` (`C ⥤ D`)、恒等関手・関手の合成 | 🚧 演習中 (`sorry` を埋める) |
 | 3 | [`NatTrans/Basic.lean`](LeanCategory/NatTrans/Basic.lean) | 自然変換 `NatTrans F G` (`F ⟹ G`)、関手圏 | 🚧 演習中 (`sorry` を埋める) |
 | 4 | [`Yoneda.lean`](LeanCategory/Yoneda.lean) | `Equiv`、共変 Hom 関手 `yonedaObj`、米田の補題 `yonedaEquiv` | 🚧 演習中 (`sorry` を埋める) |
@@ -57,8 +57,6 @@ lake env lean LeanCategory/Category/Basic.lean
 
 | ファイル | 演習 | 内容 |
 | --- | --- | --- |
-| `Category/Opposite.lean` | `unop_op` / `op_unop` | `op` と `unop` が互いに逆であること — ウォームアップ |
-| `Category/Opposite.lean` | `Category Cᵒᵖ` の `id_comp` / `comp_id` / `assoc` | 双対圏が圏になること (`C` の対応する法則の「左右反転」) |
 | `Functor/Basic.lean` | `Functor.id` の `map_id` / `map_comp` | 恒等関手が関手の法則を満たすこと (`rfl` で解ける) |
 | `Functor/Basic.lean` | `Functor.comp` の `map_id` / `map_comp` | 関手の合成が関手の法則を満たすこと (`F`, `G` の `map_id`/`map_comp` を合成する) |
 | `NatTrans/Basic.lean` | `NatTrans.id` の `naturality` | 恒等自然変換が自然性を満たすこと (`Category.id_comp`/`comp_id`) |

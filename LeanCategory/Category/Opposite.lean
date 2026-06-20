@@ -47,11 +47,11 @@ def op {C : Type u} (X : C) : Cᵒᵖ := ⟨X⟩
 
 /-- ウォームアップ: `op` してから `unop` すると元に戻る。 -/
 @[simp] theorem unop_op {C : Type u} (X : C) : (op X).unop = X := by
-  sorry
+  rw [op]
 
 /-- ウォームアップ: `unop` してから `op` すると元に戻る。 -/
 @[simp] theorem op_unop {C : Type u} (X : Cᵒᵖ) : op X.unop = X := by
-  sorry
+  rw [op]
 
 variable {C : Type u} [Category C]
 
@@ -63,19 +63,20 @@ instance : Category Cᵒᵖ where
   Hom X Y := Y.unop ⟶ X.unop
   id X := 𝟙 X.unop
   comp f g := g ≫ f
-  -- ヒント: `Cᵒᵖ` での `f ≫ 𝟙 Y` は `C` での `𝟙 Y.unop ≫ f`。
-  -- `C` の `id_comp` か `comp_id` のどちらを使えばよいか考えよ。
   id_comp := by
-    sorry
+    intro X Y f
+    rw [Category.comp_id]
 
   -- `comp_id`: `f ≫ (𝟙 Y) = f`  (`Cᵒᵖ` での合成)
   -- 展開すると `(𝟙 Y.unop) ≫ f = f` (`C` での合成) になる。
   comp_id := by
-    sorry
+    intro X Y f
+    rw [Category.id_comp]
   -- `assoc`: `(f ≫ g) ≫ h = f ≫ (g ≫ h)`  (`Cᵒᵖ` での合成)
   -- 展開すると `C` での結合律の左右が入れ替わった形になる。
   -- `Category.assoc` を使い、`.symm` が必要かどうか考えよ。
   assoc := by
-    sorry
+    intro W X Y Z f g h
+    rw [Category.assoc]
 
 end CategoryTheory

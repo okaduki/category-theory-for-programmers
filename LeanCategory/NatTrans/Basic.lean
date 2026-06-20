@@ -64,17 +64,17 @@ variable {F G H : C ⥤ D}
 def NatTrans.id (F : C ⥤ D) : F ⟹ F where
   app X := 𝟙 (F.obj X)
   naturality := by
-    sorry
+    intro X Y f
+    rw [Category.comp_id, Category.id_comp]
 
 /-- 自然変換の縦合成 (vertical composition)。`α : F ⟹ G`, `β : G ⟹ H` から
 `F ⟹ H` を作る。各成分は `α.app X ≫ β.app X`。 -/
 def NatTrans.vcomp (α : F ⟹ G) (β : G ⟹ H) : F ⟹ H where
   app X := α.app X ≫ β.app X
-  -- ヒント: `Category.assoc` を使って
-  --   `F.map f ≫ (α.app Y ≫ β.app Y)`
-  -- を `(... ≫ α.naturality f を使う ...) ≫ ...` のように変形していく。
   naturality := by
-    sorry
+    intro X Y f
+    rw [← Category.assoc, α.naturality, Category.assoc, β.naturality, Category.assoc]
+
 /-- `α ≫ β` : 自然変換の縦合成 (`NatTrans.vcomp`)。射の合成と同じ記法を使う。 -/
 scoped infixr:80 " ≫ " => NatTrans.vcomp
 
@@ -83,13 +83,23 @@ instance : Category (C ⥤ D) where
   Hom := NatTrans
   id := NatTrans.id
   comp := NatTrans.vcomp
-  -- ヒント: `NatTrans.ext` で `app` の等式に帰着させ、`funext` で各 `X` ごとに、
-  -- `D` の `Category.id_comp` を使う。
   id_comp := by
-    sorry
+    intro F G α
+    apply NatTrans.ext
+    funext X
+    simp only [NatTrans.vcomp, NatTrans.id]
+    rw [Category.id_comp]
   comp_id := by
-    sorry
+    intro F G α
+    apply NatTrans.ext
+    funext X
+    simp only [NatTrans.vcomp, NatTrans.id]
+    rw [Category.comp_id]
   assoc := by
-    sorry
+    intro F G H K α β γ
+    apply NatTrans.ext
+    funext X
+    simp only [NatTrans.vcomp]
+    rw [Category.assoc]
 
 end CategoryTheory
